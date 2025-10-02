@@ -73,7 +73,7 @@ export default function Login() {
           {/* Brand */}
           <div className="mb-4 flex items-center gap-3">
             <div className="grid h-10 w-10 place-items-center rounded-lg bg-white/10">
-              <img src="https://github.com/arnshyz/dashboard-v1/blob/main/public/akay-logo.png?raw=true" alt="AKAY" className="h-6 w-6 object-contain" />
+              <img src="/akay-logo.svg" alt="AKAY" className="h-6 w-6 object-contain" />
             </div>
             <div>
               <h1 className="text-lg font-semibold tracking-tight">AKAY Sales Dashboard</h1>
