@@ -199,7 +199,7 @@ export default function IndexPage() {
                       dark:bg-neutral-900/70 dark:border-neutral-800">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <img src="https://github.com/arnshyz/dashboard-v1/blob/main/public/akay-logo.png?raw=true" alt="AKAY" className="w-9 h-9 rounded" />
+            <img src="/akay-logo.svg" alt="AKAY" className="w-9 h-9 rounded" />
             <div>
               <h1 className="text-xl font-semibold leading-tight">AKAY Sales Dashboard</h1>
               <p className="text-xs text-neutral-500 dark:text-neutral-400">Google Sheets ↔ Next.js • Admin/Viewer • Export</p>
