@@ -85,12 +85,12 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Body must include { rows: [...] }' });
       }
       const sheets = getSheetsClient();
-      const range = `${tab}!A1`;
+      const range = `${tab}!A2`;
 
       // If header missing on sheet, we write header + rows.
-      const values = [HEADERS, *rows.map(r => HEADERS.map(h => r[h] ?? ''))];
+      
       // However spread operator with * is invalid in array; instead build manually.
-      const allValues = [HEADERS]
+      const allValues = []
       rows.forEach(r => allValues.push(HEADERS.map(h => r[h] ?? '')))
 
       await sheets.spreadsheets.values.append({
