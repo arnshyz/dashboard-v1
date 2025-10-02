@@ -1,0 +1,24 @@
+{
+  "name": "akay-sales-dashboard",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "recharts": "2.10.3",
+    "framer-motion": "10.18.0",
+    "googleapis": "127.0.0",
+    "xlsx": "0.18.5",
+    "pdfkit": "0.13.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.10",
+    "postcss": "8.4.38",
+    "autoprefixer": "10.4.20"
+  }
+}
