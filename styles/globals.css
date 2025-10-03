@@ -5,10 +5,12 @@
 
 html, body, #__next { height: 100%; }
 
+/* Grainy noise overlay for subtle texture */
 .bg-noise {
   background-image: url("data:image/svg+xml;utf8,  <svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'>  <filter id='n'>    <feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/>    <feColorMatrix type='saturate' values='0'/>    <feComponentTransfer><feFuncA type='table' tableValues='0 0.25'/></feComponentTransfer>  </filter>  <rect width='100%' height='100%' filter='url(#n)'/>  </svg>");
   background-size: 200px 200px;
 }
 
+/* mobile UX */
 * { -webkit-tap-highlight-color: transparent; }
-input, button { font-size: 16px; }
+input, button { font-size: 16px; } /* prevent iOS zoom on tap */
