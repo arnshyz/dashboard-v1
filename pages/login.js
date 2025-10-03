@@ -107,20 +107,42 @@ export default function Login() {
       return undefined;
     }
 
-    let index = 0;
     const fullText = TYPEWRITER_TEXT;
+    let currentLength = 0;
+    let isDeleting = false;
+    let timeoutId = null;
 
-    const interval = window.setInterval(() => {
-      index += 1;
-      setTypedText(fullText.slice(0, index));
+    const tick = () => {
+      if (!isDeleting) {
+        currentLength += 1;
+        setTypedText(fullText.slice(0, currentLength));
 
-      if (index >= fullText.length) {
-        window.clearInterval(interval);
+        if (currentLength === fullText.length) {
+          isDeleting = true;
+          timeoutId = window.setTimeout(tick, 1400);
+          return;
+        }
+      } else {
+        currentLength = Math.max(0, currentLength - 1);
+        setTypedText(fullText.slice(0, currentLength));
+
+        if (currentLength === 0) {
+          isDeleting = false;
+          timeoutId = window.setTimeout(tick, 500);
+          return;
+        }
       }
-    }, 120);
+
+      const delay = isDeleting ? 60 : 120;
+      timeoutId = window.setTimeout(tick, delay);
+    };
+
+    timeoutId = window.setTimeout(tick, 400);
 
     return () => {
-      window.clearInterval(interval);
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
+      }
     };
   }, [TYPEWRITER_TEXT]);
 
