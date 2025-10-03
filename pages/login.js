@@ -147,81 +147,83 @@ export default function Login() {
   }, [TYPEWRITER_TEXT]);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#050315] text-white">
-      <div ref={vantaRef} className="pointer-events-none absolute inset-0" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(244,114,182,0.25),transparent_55%),radial-gradient(circle_at_80%_30%,rgba(59,130,246,0.18),transparent_45%),radial-gradient(circle_at_50%_80%,rgba(129,140,248,0.2),transparent_50%)] mix-blend-screen" />
-      <div className="pointer-events-none absolute inset-0 bg-noise opacity-20" />
-
-      {/* Login layout */}
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-16 px-4 py-16 text-center md:flex-row md:items-center md:justify-between md:px-12 md:text-left">
-        <div className="max-w-xl space-y-4">
-          <p className="text-sm uppercase tracking-[0.4em] text-white/60">Welcome</p>
-          <div className="flex items-center justify-center gap-2 md:justify-start">
-            <h2 className="text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
-              {typedText}
-            </h2>
-            <span className="mt-2 h-7 w-[3px] animate-pulse rounded-full bg-white/80 sm:h-9" aria-hidden />
+    <div className="contents">
+      <div className="relative min-h-screen overflow-hidden bg-[#050315] text-white">
+        <div ref={vantaRef} className="pointer-events-none absolute inset-0" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(244,114,182,0.25),transparent_55%),radial-gradient(circle_at_80%_30%,rgba(59,130,246,0.18),transparent_45%),radial-gradient(circle_at_50%_80%,rgba(129,140,248,0.2),transparent_50%)] mix-blend-screen" />
+        <div className="pointer-events-none absolute inset-0 bg-noise opacity-20" />
+  
+        {/* Login layout */}
+        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-16 px-4 py-16 text-center md:flex-row md:items-center md:justify-between md:px-12 md:text-left">
+          <div className="max-w-xl space-y-4">
+            <p className="text-sm uppercase tracking-[0.4em] text-white/60">Welcome</p>
+            <div className="flex items-center justify-center gap-2 md:justify-start">
+              <h2 className="text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
+                {typedText}
+              </h2>
+              <span className="mt-2 h-7 w-[3px] animate-pulse rounded-full bg-white/80 sm:h-9" aria-hidden />
+            </div>
+            <p className="text-base text-white/70 sm:text-lg">
+              Transforming data into decisive actions for your business growth.
+            </p>
           </div>
-          <p className="text-base text-white/70 sm:text-lg">
-            Transforming data into decisive actions for your business growth.
-          </p>
-        </div>
-        <motion.form
-          onSubmit={submit}
-          initial={{ y: 12, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-sm rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl"
-        >
-          {/* Brand */}
-          <div className="mb-4 flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-lg bg-white/10">
-              <img src="/akay-logo.svg" alt="AKAY" className="h-6 w-6 object-contain" />
-            </div>
-            <div>
-              <h1 className="text-lg font-semibold tracking-tight">AKAY Sales Dashboard</h1>
-              <p className="text-xs text-neutral-300">Masuk untuk melanjutkan</p>
-            </div>
-          </div>
-
-          <label className="mb-1 block text-sm text-neutral-200">Username</label>
-          <input
-            className="mb-3 w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-white placeholder:text-neutral-400 outline-none focus:ring-2 focus:ring-white/20"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="username"
-          />
-
-          <label className="mb-1 block text-sm text-neutral-200">Password</label>
-          <input
-            type="password"
-            className="mb-4 w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-white placeholder:text-neutral-400 outline-none focus:ring-2 focus:ring-white/20"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-          />
-
-          {error ? (
-            <div className="mb-3 rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-300">
-              {error}
-            </div>
-          ) : null}
-
-          <button
-            disabled={loading}
-            className="group relative w-full overflow-hidden rounded-lg bg-white px-3 py-2 font-medium text-neutral-900 outline-none transition hover:brightness-95 disabled:opacity-60"
+          <motion.form
+            onSubmit={submit}
+            initial={{ y: 12, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="w-full max-w-sm rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl"
           >
-            <span className="relative z-10">
-              {loading ? "Memproses..." : "Login"}
-            </span>
-            {/* animated hover sheen */}
-            <span className="pointer-events-none absolute inset-y-0 left-[-200%] w-[200%] bg-gradient-to-r from-transparent via-white/40 to-transparent transition-all duration-700 group-hover:left-[200%]" />
-          </button>
-
-          <div className="mt-3 text-center text-xs text-neutral-400">
-            Develop by <span className="font-medium text-neutral-200">@mungwongsepele</span> @2025
-          </div>
-        </motion.form>
+            {/* Brand */}
+            <div className="mb-4 flex items-center gap-3">
+              <div className="grid h-10 w-10 place-items-center rounded-lg bg-white/10">
+                <img src="/akay-logo.svg" alt="AKAY" className="h-6 w-6 object-contain" />
+              </div>
+              <div>
+                <h1 className="text-lg font-semibold tracking-tight">AKAY Sales Dashboard</h1>
+                <p className="text-xs text-neutral-300">Masuk untuk melanjutkan</p>
+              </div>
+            </div>
+  
+            <label className="mb-1 block text-sm text-neutral-200">Username</label>
+            <input
+              className="mb-3 w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-white placeholder:text-neutral-400 outline-none focus:ring-2 focus:ring-white/20"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="username"
+            />
+  
+            <label className="mb-1 block text-sm text-neutral-200">Password</label>
+            <input
+              type="password"
+              className="mb-4 w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-white placeholder:text-neutral-400 outline-none focus:ring-2 focus:ring-white/20"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+            />
+  
+            {error ? (
+              <div className="mb-3 rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-300">
+                {error}
+              </div>
+            ) : null}
+  
+            <button
+              disabled={loading}
+              className="group relative w-full overflow-hidden rounded-lg bg-white px-3 py-2 font-medium text-neutral-900 outline-none transition hover:brightness-95 disabled:opacity-60"
+            >
+              <span className="relative z-10">
+                {loading ? "Memproses..." : "Login"}
+              </span>
+              {/* animated hover sheen */}
+              <span className="pointer-events-none absolute inset-y-0 left-[-200%] w-[200%] bg-gradient-to-r from-transparent via-white/40 to-transparent transition-all duration-700 group-hover:left-[200%]" />
+            </button>
+  
+            <div className="mt-3 text-center text-xs text-neutral-400">
+              Develop by <span className="font-medium text-neutral-200">@mungwongsepele</span> @2025
+            </div>
+          </motion.form>
+        </div>
       </div>
     </div>
   );
