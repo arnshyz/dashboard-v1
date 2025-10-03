@@ -209,6 +209,7 @@ export default function IndexPage() {
       cost: isDark ? '#f87171' : '#ef4444',
       marketing: isDark ? '#c084fc' : '#8b5cf6',
       bar: isDark ? '#f59e0b' : '#f97316',
+      profit: isDark ? '#4ade80' : '#22c55e',
       grid: isDark ? '#27272a' : '#e5e7eb',
     }),
     [isDark]
@@ -315,25 +316,43 @@ export default function IndexPage() {
       </div>
 
       {/* Filters */}
-      <div className="max-w-7xl mx-auto px-4 py-4">
+      <div className="max-w-7xl mx-auto px-4 py-3">
         <div className="grid md:grid-cols-2 gap-3">
-          <div className="rounded-2xl border border-neutral-200 bg-white p-3 dark:bg-neutral-900 dark:border-neutral-800">
-            <div className="text-sm font-medium mb-2 text-neutral-700 dark:text-neutral-200">Filter Channel</div>
-            <div className="flex flex-wrap gap-2">
+          <div className="rounded-2xl border border-neutral-200 bg-white p-3 sm:p-4 dark:bg-neutral-900 dark:border-neutral-800">
+            <div className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400 mb-2">
+              Channel
+            </div>
+            <div className="flex flex-wrap gap-1.5">
               {allChannels.map((c) => (
-                <button key={c} onClick={() => toggleSet(setChannels, (s,v)=>s.has(v), c)}
-                  className={`px-3 py-1.5 rounded-full border text-sm transition ${inSet(channels, c) ? "bg-neutral-900 text-white border-neutral-900" : "bg-white text-neutral-700 border-neutral-300 hover:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700"}`}>
+                <button
+                  key={c}
+                  onClick={() => toggleSet(setChannels, (s, v) => s.has(v), c)}
+                  className={`px-2.5 py-1 rounded-full text-xs font-medium transition ${
+                    inSet(channels, c)
+                      ? "bg-neutral-900 text-white shadow-sm dark:bg-neutral-100 dark:text-neutral-900"
+                      : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700/70"
+                  }`}
+                >
                   {c}
                 </button>
               ))}
             </div>
           </div>
-          <div className="rounded-2xl border border-neutral-200 bg-white p-3 dark:bg-neutral-900 dark:border-neutral-800">
-            <div className="text-sm font-medium mb-2 text-neutral-700 dark:text-neutral-200">Filter Marketplace</div>
-            <div className="flex flex-wrap gap-2">
+          <div className="rounded-2xl border border-neutral-200 bg-white p-3 sm:p-4 dark:bg-neutral-900 dark:border-neutral-800">
+            <div className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400 mb-2">
+              Marketplace
+            </div>
+            <div className="flex flex-wrap gap-1.5">
               {allMarketplaces.map((m) => (
-                <button key={m} onClick={() => toggleSet(setMarketplaces, (s,v)=>s.has(v), m)}
-                  className={`px-3 py-1.5 rounded-full border text-sm transition ${inSet(marketplaces, m) ? "bg-neutral-900 text-white border-neutral-900" : "bg-white text-neutral-700 border-neutral-300 hover:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700"}`}>
+                <button
+                  key={m}
+                  onClick={() => toggleSet(setMarketplaces, (s, v) => s.has(v), m)}
+                  className={`px-2.5 py-1 rounded-full text-xs font-medium transition ${
+                    inSet(marketplaces, m)
+                      ? "bg-neutral-900 text-white shadow-sm dark:bg-neutral-100 dark:text-neutral-900"
+                      : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700/70"
+                  }`}
+                >
                   {m}
                 </button>
               ))}
@@ -344,16 +363,17 @@ export default function IndexPage() {
 
       {/* KPI cards */}
       <div className="max-w-7xl mx-auto px-4">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <KPI title="Penjualan (Gross)" value={fmtIDR(totals.penjualan)} sub={"Diskon " + fmtIDR(totals.diskon)} />
           <KPI title="Penjualan Net" value={fmtIDR(totals.penjualanNet)} sub={"Qty " + fmtNum(totals.qty)} />
           <KPI title="Total Biaya" value={fmtIDR(totals.totalBiaya)} sub={`Modal ${fmtIDR(totals.modal)}`} />
-          <KPI title="Laba" value={fmtIDR(totals.laba)} sub={`Margin ${(totals.margin * 100).toFixed(1)}% • ROAS ${totals.roas.toFixed(2)}x`} />
+          <KPI title="Total Biaya Iklan" value={fmtIDR(totals.biayaIklan)} sub={`ROAS ${totals.roas.toFixed(2)}x`} />
+          <KPI title="Laba" value={fmtIDR(totals.laba)} sub={`Margin ${(totals.margin * 100).toFixed(1)}%`} />
         </div>
       </div>
 
       {/* Main Charts */}
-      <div className="max-w-7xl mx-auto px-4 py-6 grid lg:grid-cols-3 gap-4">
+      <div className="max-w-7xl mx-auto px-4 py-6 grid lg:grid-cols-4 gap-4">
         <div className="rounded-2xl border border-neutral-200 bg-white p-4 lg:col-span-2 dark:bg-neutral-900 dark:border-neutral-800">
           <div className="text-sm font-medium mb-3 text-neutral-700 dark:text-neutral-200">Pendapatan Net vs Total Biaya (Harian)</div>
           <div className="h-[42vh] sm:h-72">
@@ -387,8 +407,29 @@ export default function IndexPage() {
           </div>
         </div>
         <div className="rounded-2xl border border-neutral-200 bg-white p-4 dark:bg-neutral-900 dark:border-neutral-800">
+          <div className="text-sm font-medium mb-3 text-neutral-700 dark:text-neutral-200">Laba Harian</div>
+          <div className="h-[42vh] sm:h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={daily}>
+                <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} />
+                <XAxis dataKey="date" tick={axisTickStyle} tickLine={false} axisLine={false} />
+                <YAxis
+                  tickFormatter={formatAxisValue}
+                  tick={axisTickStyle}
+                  width={80}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <Tooltip formatter={(v) => fmtIDR(v)} contentStyle={tooltipStyle} itemStyle={tooltipItemStyle} />
+                <Legend wrapperStyle={legendStyle} />
+                <Line type="monotone" dataKey="laba" name="Laba" stroke={chartColors.profit} strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="rounded-2xl border border-neutral-200 bg-white p-4 dark:bg-neutral-900 dark:border-neutral-800">
           <div className="text-sm font-medium mb-3 text-neutral-700 dark:text-neutral-200">Breakdown Biaya</div>
-          <div className="h-[36vh] sm:h-72">
+          <div className="h-[42vh] sm:h-72">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={90}>
