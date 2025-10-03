@@ -6,7 +6,6 @@ import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell
 } from "recharts";
 
-const allChannels = ["Website", "Shopee", "Tokopedia"];
 const allMarketplaces = ["Website", "Shopee", "Tokopedia"];
 
 const fmtIDR = (n) =>
@@ -123,7 +122,6 @@ export default function IndexPage() {
   // Filters
   const [dateFrom, setDateFrom] = useState(() => { const d = new Date(); d.setDate(d.getDate() - 14); return d.toISOString().slice(0,10); });
   const [dateTo, setDateTo] = useState(() => new Date().toISOString().slice(0,10));
-  const [channels, setChannels] = useState(new Set(allChannels));
   const [marketplaces, setMarketplaces] = useState(new Set(allMarketplaces));
 
   useEffect(() => { const k = localStorage.getItem('AKAY_ADMIN_KEY') || ''; if (k) setAdminKey(k); }, []);
@@ -146,8 +144,8 @@ export default function IndexPage() {
   const filtered = useMemo(() => rows.filter(r => {
     const t = new Date(r.date);
     const min = new Date(dateFrom); const max = new Date(dateTo); max.setHours(23,59,59,999);
-    return t >= min && t <= max && channels.has(r.channel) && marketplaces.has(r.marketplace);
-  }), [rows, dateFrom, dateTo, channels, marketplaces]);
+    return t >= min && t <= max && marketplaces.has(r.marketplace);
+  }), [rows, dateFrom, dateTo, marketplaces]);
 
   const daily = useMemo(() => groupByDate(filtered), [filtered]);
 
@@ -312,14 +310,6 @@ export default function IndexPage() {
                   Menu
                 </button>
               </div>
-              <div className="flex flex-col gap-1 rounded-2xl bg-white/40 px-3 py-2 shadow-sm ring-1 ring-neutral-200 md:flex-row md:items-center md:gap-3 dark:bg-neutral-900/50 dark:ring-neutral-800">
-                <div className="text-base font-semibold text-neutral-800 dark:text-neutral-100">Helo Admin</div>
-                <div className="flex flex-col gap-1 text-sm text-neutral-500 capitalize md:flex-row md:items-center md:gap-3 dark:text-neutral-400">
-                  <span>{formattedDate}</span>
-                  <span className="hidden h-3 w-px bg-neutral-300 md:inline-block dark:bg-neutral-700" aria-hidden="true"></span>
-                  <span className="font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">{formattedTime}</span>
-                </div>
-              </div>
             </div>
             {/* Control groups */}
             <div
@@ -354,24 +344,20 @@ export default function IndexPage() {
       {/* Filters */}
       <div className="max-w-7xl mx-auto px-4 py-3">
         <div className="grid md:grid-cols-2 gap-3">
-          <div className="rounded-2xl border border-neutral-200 bg-white p-3 sm:p-4 dark:bg-neutral-900 dark:border-neutral-800">
-            <div className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400 mb-2">
-              Channel
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {allChannels.map((c) => (
-                <button
-                  key={c}
-                  onClick={() => toggleSet(setChannels, (s, v) => s.has(v), c)}
-                  className={`px-2.5 py-1 rounded-full text-xs font-medium transition ${
-                    inSet(channels, c)
-                      ? "bg-neutral-900 text-white shadow-sm dark:bg-neutral-100 dark:text-neutral-900"
-                      : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700/70"
-                  }`}
-                >
-                  {c}
-                </button>
-              ))}
+          <div className="rounded-2xl border border-neutral-200 bg-white p-4 dark:bg-neutral-900 dark:border-neutral-800">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">Helo Admin</div>
+                <div className="mt-1 text-xs font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
+                  Ringkasan dashboard
+                </div>
+              </div>
+              <div className="flex flex-col items-start gap-1 text-sm text-neutral-600 capitalize sm:items-end sm:text-right dark:text-neutral-300">
+                <span>{formattedDate}</span>
+                <span className="text-base font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
+                  {formattedTime}
+                </span>
+              </div>
             </div>
           </div>
           <div className="rounded-2xl border border-neutral-200 bg-white p-3 sm:p-4 dark:bg-neutral-900 dark:border-neutral-800">
