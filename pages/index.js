@@ -296,7 +296,6 @@ export default function IndexPage() {
                   <img src="/akay-logo.svg" alt="AKAY" className="w-9 h-9 rounded" />
                   <div>
                     <h1 className="text-xl font-semibold leading-tight">AKAY Sales Dashboard</h1>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400">Google Sheets ↔ Next.js • Admin/Viewer • Export</p>
                   </div>
                 </div>
                 <button
