@@ -31,33 +31,46 @@ export default function Login() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
-      {/* Animated gradient blobs */}
+      {/* Animated line accents */}
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute -top-32 -left-32 h-[36rem] w-[36rem] rounded-full blur-3xl"
-        initial={{ opacity: 0.4, scale: 0.9 }}
-        animate={{ opacity: 0.7, scale: 1.05, x: [0, 30, -20, 0], y: [0, -10, 20, 0] }}
-        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-        style={{ background: "radial-gradient(closest-side, rgba(120,119,198,0.6), rgba(120,119,198,0) 70%)" }}
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(110deg, rgba(56,189,248,0.22) 0px, rgba(56,189,248,0.22) 2px, transparent 2px, transparent 140px)",
+          maskImage: "linear-gradient(to bottom, transparent 5%, black 20%, black 80%, transparent 95%)",
+          WebkitMaskImage: "linear-gradient(to bottom, transparent 5%, black 20%, black 80%, transparent 95%)",
+        }}
+        initial={{ opacity: 0.15, backgroundPosition: "0% 0%" }}
+        animate={{ opacity: 0.3, backgroundPosition: ["0% 0%", "200% 100%"] }}
+        transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
       />
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute -bottom-40 -right-40 h-[40rem] w-[40rem] rounded-full blur-3xl"
-        initial={{ opacity: 0.35, scale: 0.9 }}
-        animate={{ opacity: 0.6, scale: 1.08, x: [0, -20, 35, 0], y: [0, 25, -15, 0] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        style={{ background: "radial-gradient(closest-side, rgba(34,197,94,0.5), rgba(34,197,94,0) 70%)" }}
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(250deg, rgba(167,139,250,0.18) 0px, rgba(167,139,250,0.18) 2px, transparent 2px, transparent 120px)",
+          maskImage: "linear-gradient(to right, transparent 10%, black 30%, black 70%, transparent 90%)",
+          WebkitMaskImage: "linear-gradient(to right, transparent 10%, black 30%, black 70%, transparent 90%)",
+        }}
+        initial={{ opacity: 0.1, backgroundPosition: "0% 100%" }}
+        animate={{ opacity: 0.22, backgroundPosition: ["0% 100%", "-180% -40%"] }}
+        transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
       />
 
-      {/* Subtle animated grid overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:24px_24px] opacity-30" />
+      {/* Pulsing partial horizontal lines */}
       <motion.div
         aria-hidden
-        className="absolute inset-0"
-        initial={{ backgroundPositionX: 0 }}
-        animate={{ backgroundPositionX: ["0px", "48px", "0px"] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        style={{ backgroundImage: "linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px)", backgroundSize: "48px 100%", mixBlendMode: "overlay" }}
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            "linear-gradient(to bottom, transparent 0%, transparent 40%, rgba(255,255,255,0.12) 45%, transparent 50%, transparent 100%)",
+          backgroundSize: "100% 120px",
+        }}
+        initial={{ opacity: 0.05, backgroundPositionY: 0 }}
+        animate={{ opacity: [0.05, 0.18, 0.05], backgroundPositionY: [0, 60, 120, 0] }}
+        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
       />
 
       {/* Noise layer */}
