@@ -152,6 +152,16 @@ export default function IndexPage() {
     { name: "Lainnya", value: totals.biayaLainnya },
   ], [totals]);
 
+  const adSpendByChannel = useMemo(() => {
+    const map = new Map();
+    filtered.forEach((row) => {
+      const channel = row.channel || "Lainnya";
+      const current = map.get(channel) || 0;
+      map.set(channel, current + parseNumber(row.biayaIklan));
+    });
+    return Array.from(map.entries()).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
+  }, [filtered]);
+
   const toggleSet = (setState, hasFn, value) => { setState((prev) => { const next = new Set(prev); if (hasFn(prev, value)) next.delete(value); else next.add(value); return next; }); };
   const inSet = (set, value) => set.has(value);
 
@@ -323,7 +333,7 @@ export default function IndexPage() {
       </div>
 
       {/* New Charts: Ad Spend & Marketplace Deductions */}
-      <div className="max-w-7xl mx-auto px-4 pb-6 grid md:grid-cols-2 gap-4">
+      <div className="max-w-7xl mx-auto px-4 pb-6 grid md:grid-cols-2 xl:grid-cols-3 gap-4">
         <div className="rounded-2xl border border-neutral-200 bg-white p-4 dark:bg-neutral-900 dark:border-neutral-800">
           <div className="text-sm font-medium mb-3 text-neutral-700 dark:text-neutral-200">Pengeluaran Iklan (Harian)</div>
           <div className="h-[36vh] sm:h-64">
@@ -350,6 +360,21 @@ export default function IndexPage() {
                 <Tooltip formatter={(v) => fmtIDR(v)} />
                 <Legend />
                 <Bar dataKey="potonganMarketplace" name="Potongan MP" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="rounded-2xl border border-neutral-200 bg-white p-4 dark:bg-neutral-900 dark:border-neutral-800">
+          <div className="text-sm font-medium mb-3 text-neutral-700 dark:text-neutral-200">Biaya Iklan per Channel</div>
+          <div className="h-[36vh] sm:h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={adSpendByChannel}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis tickFormatter={(v) => fmtNum(v / 1000) + "k"} />
+                <Tooltip formatter={(v) => fmtIDR(v)} />
+                <Legend />
+                <Bar dataKey="value" name="Biaya Iklan" fill="#f97316" />
               </BarChart>
             </ResponsiveContainer>
           </div>
