@@ -72,6 +72,7 @@ export default function IndexPage() {
   const [adminKey, setAdminKey] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [now, setNow] = useState(() => new Date());
 
   // THEME (light/dark)
   const [theme, setTheme] = useState('light');
@@ -87,6 +88,31 @@ export default function IndexPage() {
     localStorage.setItem('AKAY_THEME', next);
     document.documentElement.classList.toggle('dark', next === 'dark');
   };
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const formattedDate = useMemo(() => {
+    const text = new Intl.DateTimeFormat('id-ID', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(now);
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }, [now]);
+
+  const formattedTime = useMemo(
+    () =>
+      new Intl.DateTimeFormat('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      }).format(now),
+    [now]
+  );
 
   // Logout (hapus cookie sesi)
   const doLogout = async () => {
@@ -266,24 +292,34 @@ export default function IndexPage() {
           {/* Responsive header layout */}
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             {/* Brand */}
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <img src="/akay-logo.svg" alt="AKAY" className="w-9 h-9 rounded" />
-                <div>
-                  <h1 className="text-xl font-semibold leading-tight">AKAY Sales Dashboard</h1>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400">Google Sheets ↔ Next.js • Admin/Viewer • Export</p>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <img src="/akay-logo.svg" alt="AKAY" className="w-9 h-9 rounded" />
+                  <div>
+                    <h1 className="text-xl font-semibold leading-tight">AKAY Sales Dashboard</h1>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">Google Sheets ↔ Next.js • Admin/Viewer • Export</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen((prev) => !prev)}
+                  className="md:hidden inline-flex items-center gap-2 px-3 py-2 rounded-full border border-neutral-300 text-sm font-medium text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-100 dark:bg-neutral-900"
+                  aria-expanded={mobileMenuOpen}
+                  aria-controls="dashboard-controls"
+                >
+                  <span className="text-lg" aria-hidden="true">☰</span>
+                  Menu
+                </button>
+              </div>
+              <div className="flex flex-col gap-1 rounded-2xl bg-white/40 px-3 py-2 shadow-sm ring-1 ring-neutral-200 md:flex-row md:items-center md:gap-3 dark:bg-neutral-900/50 dark:ring-neutral-800">
+                <div className="text-base font-semibold text-neutral-800 dark:text-neutral-100">Helo Admin</div>
+                <div className="flex flex-col gap-1 text-sm text-neutral-500 capitalize md:flex-row md:items-center md:gap-3 dark:text-neutral-400">
+                  <span>{formattedDate}</span>
+                  <span className="hidden h-3 w-px bg-neutral-300 md:inline-block dark:bg-neutral-700" aria-hidden="true"></span>
+                  <span className="font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">{formattedTime}</span>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setMobileMenuOpen((prev) => !prev)}
-                className="md:hidden inline-flex items-center gap-2 px-3 py-2 rounded-full border border-neutral-300 text-sm font-medium text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-100 dark:bg-neutral-900"
-                aria-expanded={mobileMenuOpen}
-                aria-controls="dashboard-controls"
-              >
-                <span className="text-lg" aria-hidden="true">☰</span>
-                Menu
-              </button>
             </div>
             {/* Control groups */}
             <div
@@ -293,12 +329,12 @@ export default function IndexPage() {
               {/* Date group */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <div className="flex items-center gap-2">
-                  <label className="text-sm text-neutral-600 dark:text-neutral-300">Dari</label>
-                  <input type="date" value={dateFrom} onChange={(e)=>setDateFrom(e.target.value)} className="w-full sm:w-auto px-2 py-1 rounded border border-neutral-300 text-sm dark:bg-neutral-800 dark:border-neutral-700" />
+                  <label className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300">Dari</label>
+                  <input type="date" value={dateFrom} onChange={(e)=>setDateFrom(e.target.value)} className="w-32 sm:w-auto px-2 py-1 rounded border border-neutral-300 text-xs sm:text-sm dark:bg-neutral-800 dark:border-neutral-700" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <label className="text-sm text-neutral-600 dark:text-neutral-300">Sampai</label>
-                  <input type="date" value={dateTo} onChange={(e)=>setDateTo(e.target.value)} className="w-full sm:w-auto px-2 py-1 rounded border border-neutral-300 text-sm dark:bg-neutral-800 dark:border-neutral-700" />
+                  <label className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300">Sampai</label>
+                  <input type="date" value={dateTo} onChange={(e)=>setDateTo(e.target.value)} className="w-32 sm:w-auto px-2 py-1 rounded border border-neutral-300 text-xs sm:text-sm dark:bg-neutral-800 dark:border-neutral-700" />
                 </div>
               </div>
               {/* Action group */}
