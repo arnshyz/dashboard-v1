@@ -1,4 +1,5 @@
 
+import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
@@ -147,7 +148,15 @@ export default function Login() {
   }, [TYPEWRITER_TEXT]);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#050315] text-white">
+    <>
+      <Head>
+        <title>Login | AKAY Sales Dashboard</title>
+        <meta
+          name="description"
+          content="Masuk ke AKAY Sales Dashboard untuk mengelola dan memantau kinerja penjualan Anda."
+        />
+      </Head>
+      <div className="relative min-h-screen overflow-hidden bg-[#050315] text-white">
       <div ref={vantaRef} className="pointer-events-none absolute inset-0" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(244,114,182,0.25),transparent_55%),radial-gradient(circle_at_80%_30%,rgba(59,130,246,0.18),transparent_45%),radial-gradient(circle_at_50%_80%,rgba(129,140,248,0.2),transparent_50%)] mix-blend-screen" />
       <div className="pointer-events-none absolute inset-0 bg-noise opacity-20" />
@@ -223,6 +232,6 @@ export default function Login() {
           </div>
         </motion.form>
       </div>
-    </div>
+    </>
   );
 }
