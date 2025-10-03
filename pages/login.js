@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 export default function Login() {
+  const TYPEWRITER_TEXT = "AKAY DIGITAL NUSANTARA";
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const vantaRef = useRef(null);
+  const [typedText, setTypedText] = useState("");
 
   const submit = async (e) => {
     e.preventDefault();
@@ -100,20 +102,54 @@ export default function Login() {
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return undefined;
+    }
+
+    let index = 0;
+    const fullText = TYPEWRITER_TEXT;
+
+    const interval = window.setInterval(() => {
+      index += 1;
+      setTypedText(fullText.slice(0, index));
+
+      if (index >= fullText.length) {
+        window.clearInterval(interval);
+      }
+    }, 120);
+
+    return () => {
+      window.clearInterval(interval);
+    };
+  }, [TYPEWRITER_TEXT]);
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#050315] text-white">
       <div ref={vantaRef} className="pointer-events-none absolute inset-0" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(244,114,182,0.25),transparent_55%),radial-gradient(circle_at_80%_30%,rgba(59,130,246,0.18),transparent_45%),radial-gradient(circle_at_50%_80%,rgba(129,140,248,0.2),transparent_50%)] mix-blend-screen" />
       <div className="pointer-events-none absolute inset-0 bg-noise opacity-20" />
 
-      {/* Login card */}
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 md:justify-end md:px-12">
+      {/* Login layout */}
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-16 px-4 py-16 text-center md:flex-row md:items-center md:justify-between md:px-12 md:text-left">
+        <div className="max-w-xl space-y-4">
+          <p className="text-sm uppercase tracking-[0.4em] text-white/60">Welcome</p>
+          <div className="flex items-center justify-center gap-2 md:justify-start">
+            <h2 className="text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
+              {typedText}
+            </h2>
+            <span className="mt-2 h-7 w-[3px] animate-pulse rounded-full bg-white/80 sm:h-9" aria-hidden />
+          </div>
+          <p className="text-base text-white/70 sm:text-lg">
+            Transforming data into decisive actions for your business growth.
+          </p>
+        </div>
         <motion.form
           onSubmit={submit}
           initial={{ y: 12, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-sm rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-2xl md:mr-4 lg:mr-12"
+          className="w-full max-w-sm rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl"
         >
           {/* Brand */}
           <div className="mb-4 flex items-center gap-3">
@@ -161,7 +197,7 @@ export default function Login() {
           </button>
 
           <div className="mt-3 text-center text-xs text-neutral-400">
-            Set ENV <code>ADMIN_UI_USER</code>, <code>ADMIN_UI_PASSWORD</code>, <code>SESSION_SECRET</code>
+            Develop by <span className="font-medium text-neutral-200">@mungwongsepele</span> @2025
           </div>
         </motion.form>
       </div>
