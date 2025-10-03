@@ -302,9 +302,6 @@ export default function IndexPage() {
               </div>
               {/* Action group */}
               <div className="flex flex-wrap items-center gap-2">
-                <button onClick={()=>doExport('csv')} className="w-full sm:w-auto px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">CSV</button>
-                <button onClick={()=>doExport('xlsx')} className="w-full sm:w-auto px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">XLSX</button>
-                <button onClick={()=>doExport('pdf')} className="w-full sm:w-auto px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">PDF</button>
                 <button onClick={toggleTheme} className="w-full sm:w-auto px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700" title="Ganti tema">
                   {theme === 'dark' ? '☀️ Terang' : '🌙 Gelap'}
                 </button>
@@ -477,16 +474,23 @@ export default function IndexPage() {
         <div className="rounded-2xl border border-neutral-200 bg-white overflow-hidden dark:bg-neutral-900 dark:border-neutral-800">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 py-3 border-b gap-2 dark:border-neutral-800">
             <div className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Rangkuman Harian</div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 md:flex md:flex-wrap items-center gap-2 w-full md:w-auto">
+            <div className="flex flex-col gap-2 w-full lg:flex-row lg:items-center lg:justify-between">
               <label className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
                 <input type="checkbox" checked={replaceOnImport} onChange={(e) => setReplaceOnImport(e.target.checked)} />
                 Ganti data saat import CSV
               </label>
-              <label className="text-sm px-3 py-1.5 rounded-full bg-neutral-900 text-white cursor-pointer dark:bg-neutral-200 dark:text-neutral-900 text-center">
-                Import CSV
-                <input type="file" accept=".csv" className="hidden" onChange={(e)=>{ const f = e.target.files?.[0]; if (f) onImportCSV(f); }} />
-              </label>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <div className="flex flex-wrap sm:flex-nowrap gap-2">
+                  <button onClick={()=>doExport('csv')} className="w-full sm:w-auto px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">CSV</button>
+                  <button onClick={()=>doExport('xlsx')} className="w-full sm:w-auto px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">XLSX</button>
+                  <button onClick={()=>doExport('pdf')} className="w-full sm:w-auto px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">PDF</button>
+                </div>
+                <label className="inline-flex items-center justify-center text-sm px-3 py-1.5 rounded-full bg-neutral-900 text-white cursor-pointer dark:bg-neutral-200 dark:text-neutral-900 text-center">
+                  Import CSV
+                  <input type="file" accept=".csv" className="hidden" onChange={(e)=>{ const f = e.target.files?.[0]; if (f) onImportCSV(f); }} />
+                </label>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
                 <input placeholder="Admin API Key" value={adminKey} onChange={(e)=>setAdminKey(e.target.value)} className="flex-1 px-2 py-1 rounded border border-neutral-300 text-sm dark:bg-neutral-800 dark:border-neutral-700" />
                 <button onClick={loginAdmin} className="px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">Login Admin</button>
               </div>
