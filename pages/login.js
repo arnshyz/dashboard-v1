@@ -106,14 +106,14 @@ export default function Login() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(244,114,182,0.25),transparent_55%),radial-gradient(circle_at_80%_30%,rgba(59,130,246,0.18),transparent_45%),radial-gradient(circle_at_50%_80%,rgba(129,140,248,0.2),transparent_50%)] mix-blend-screen" />
       <div className="pointer-events-none absolute inset-0 bg-noise opacity-20" />
 
-      {/* Centered card */}
-      <div className="relative z-10 grid min-h-screen place-items-center px-4">
+      {/* Login card */}
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 md:justify-end md:px-12">
         <motion.form
           onSubmit={submit}
           initial={{ y: 12, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-sm rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-2xl"
+          className="w-full max-w-sm rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-2xl md:mr-4 lg:mr-12"
         >
           {/* Brand */}
           <div className="mb-4 flex items-center gap-3">
