@@ -1,3 +1,4 @@
+
 import { NextResponse } from 'next/server';
 
 function toBase64Url(arrBuf) {
@@ -24,19 +25,38 @@ async function verify(token, secret) {
   const expect = await hmacSha256Base64Url(secret, data);
   return sig === expect;
 }
+
+const STATIC_EXT = /\.(png|jpe?g|gif|svg|webp|ico|css|js|map|txt|xml|json|woff2?|ttf|eot|otf|mp4|webm|ogg|mp3|wav|pdf|csv|xlsx)$/i;
+
 export async function middleware(req) {
   const { pathname } = req.nextUrl;
-  if (pathname.startsWith('/api') || pathname.startsWith('/_next') || pathname.startsWith('/favicon') || pathname === '/login') {
+
+  if (
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/_next') ||
+    pathname === '/favicon.ico' ||
+    pathname.startsWith('/public') ||
+    STATIC_EXT.test(pathname)
+  ) {
     return NextResponse.next();
   }
+  if (pathname === '/login') return NextResponse.next();
+
   const secret = process.env.SESSION_SECRET || '';
   if (!secret) return NextResponse.next();
+
   const token = req.cookies.get('akay_session')?.value;
   const ok = await verify(token, secret);
   if (ok) return NextResponse.next();
+
   const url = req.nextUrl.clone();
   url.pathname = '/login';
-  url.searchParams.set('next', pathname);
+  if (!STATIC_EXT.test(pathname)) {
+    url.searchParams.set('next', pathname);
+  }
   return NextResponse.redirect(url);
 }
-export const config = { matcher: ['/((?!api|_next|static|favicon.ico).*)'] };
+
+export const config = {
+  matcher: ['/((?!api|_next|favicon.ico|.*\..*).*)'],
+};

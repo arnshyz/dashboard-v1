@@ -1,3 +1,4 @@
+
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -21,7 +22,8 @@ const parseNumber = (v) => {
 };
 
 const seed = [
-  { date: "2025-09-20", channel: "Website", marketplace: "Website", qty: 12, penjualan: 2500000, modal: 1200000, biayaIklan: 250000, potonganMarketplace: 0, biayaOperasional: 150000, gajiKaryawan: 300000, pajak: 25000, diskon: 50000, codFee: 0, biayaPengiriman: 40000, biayaLainnya: 0 }
+  { date: "2025-09-20", channel: "Website", marketplace: "Website", qty: 12, penjualan: 2500000, modal: 1200000, biayaIklan: 250000, potonganMarketplace: 0, biayaOperasional: 150000, gajiKaryawan: 300000, pajak: 25000, diskon: 50000, codFee: 0, biayaPengiriman: 40000, biayaLainnya: 0 },
+  { date: "2025-09-21", channel: "Website", marketplace: "Website", qty: 8, penjualan: 1800000, modal: 900000, biayaIklan: 200000, potonganMarketplace: 0, biayaOperasional: 130000, gajiKaryawan: 300000, pajak: 20000, diskon: 30000, codFee: 0, biayaPengiriman: 30000, biayaLainnya: 0 }
 ];
 
 function sumBy(arr, key) { return arr.reduce((a, b) => a + parseNumber(b[key]), 0); }
@@ -197,30 +199,43 @@ export default function IndexPage() {
       {/* Header */}
       <div className="sticky top-0 z-30 backdrop-blur bg-white/70 border-b border-neutral-200
                       dark:bg-neutral-900/70 dark:border-neutral-800">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <img src="/akay-logo.svg" alt="AKAY" className="w-9 h-9 rounded" />
-            <div>
-              <h1 className="text-xl font-semibold leading-tight">AKAY Sales Dashboard</h1>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">Google Sheets ↔ Next.js • Admin/Viewer • Export</p>
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          {/* Responsive header layout */}
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            {/* Brand */}
+            <div className="flex items-center gap-3">
+              <img src="/akay-logo.svg" alt="AKAY" className="w-9 h-9 rounded" />
+              <div>
+                <h1 className="text-xl font-semibold leading-tight">AKAY Sales Dashboard</h1>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">Google Sheets ↔ Next.js • Admin/Viewer • Export</p>
+              </div>
             </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <label className="text-sm text-neutral-600 dark:text-neutral-300">Dari</label>
-            <input type="date" value={dateFrom} onChange={(e)=>setDateFrom(e.target.value)} className="px-2 py-1 rounded border border-neutral-300 text-sm dark:bg-neutral-800 dark:border-neutral-700" />
-            <label className="text-sm text-neutral-600 dark:text-neutral-300">Sampai</label>
-            <input type="date" value={dateTo} onChange={(e)=>setDateTo(e.target.value)} className="px-2 py-1 rounded border border-neutral-300 text-sm dark:bg-neutral-800 dark:border-neutral-700" />
-
-            <button onClick={()=>doExport('csv')} className="px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">CSV</button>
-            <button onClick={()=>doExport('xlsx')} className="px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">XLSX</button>
-            <button onClick={()=>doExport('pdf')} className="px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">PDF</button>
-
-            <button onClick={toggleTheme} className="px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700" title="Ganti tema">
-              {theme === 'dark' ? '☀️ Terang' : '🌙 Gelap'}
-            </button>
-            <button onClick={async()=>{await doLogout();}} className="px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">
-              Logout
-            </button>
+            {/* Control groups */}
+            <div className="grid gap-2 sm:grid-cols-2 md:flex md:flex-wrap md:items-center md:gap-2">
+              {/* Date group */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <label className="text-sm text-neutral-600 dark:text-neutral-300">Dari</label>
+                  <input type="date" value={dateFrom} onChange={(e)=>setDateFrom(e.target.value)} className="w-full sm:w-auto px-2 py-1 rounded border border-neutral-300 text-sm dark:bg-neutral-800 dark:border-neutral-700" />
+                </div>
+                <div className="flex items-center gap-2">
+                  <label className="text-sm text-neutral-600 dark:text-neutral-300">Sampai</label>
+                  <input type="date" value={dateTo} onChange={(e)=>setDateTo(e.target.value)} className="w-full sm:w-auto px-2 py-1 rounded border border-neutral-300 text-sm dark:bg-neutral-800 dark:border-neutral-700" />
+                </div>
+              </div>
+              {/* Action group */}
+              <div className="flex flex-wrap items-center gap-2">
+                <button onClick={()=>doExport('csv')} className="w-full sm:w-auto px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">CSV</button>
+                <button onClick={()=>doExport('xlsx')} className="w-full sm:w-auto px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">XLSX</button>
+                <button onClick={()=>doExport('pdf')} className="w-full sm:w-auto px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">PDF</button>
+                <button onClick={toggleTheme} className="w-full sm:w-auto px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700" title="Ganti tema">
+                  {theme === 'dark' ? '☀️ Terang' : '🌙 Gelap'}
+                </button>
+                <button onClick={async()=>{await doLogout();}} className="w-full sm:w-auto px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">
+                  Logout
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -263,7 +278,7 @@ export default function IndexPage() {
         </div>
       </div>
 
-      {/* Charts */}
+      {/* Main Charts */}
       <div className="max-w-7xl mx-auto px-4 py-6 grid lg:grid-cols-3 gap-4">
         <div className="rounded-2xl border border-neutral-200 bg-white p-4 lg:col-span-2 dark:bg-neutral-900 dark:border-neutral-800">
           <div className="text-sm font-medium mb-3 text-neutral-700 dark:text-neutral-200">Pendapatan Net vs Total Biaya (Harian)</div>
@@ -307,25 +322,11 @@ export default function IndexPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 pb-6 grid lg:grid-cols-3 gap-4">
+      {/* New Charts: Ad Spend & Marketplace Deductions */}
+      <div className="max-w-7xl mx-auto px-4 pb-6 grid md:grid-cols-2 gap-4">
         <div className="rounded-2xl border border-neutral-200 bg-white p-4 dark:bg-neutral-900 dark:border-neutral-800">
-          <div className="text-sm font-medium mb-3 text-neutral-700 dark:text-neutral-200">Qty Terjual (Harian)</div>
-          <div className="h-[38vh] sm:h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={daily}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="qty" name="Qty" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-neutral-200 bg-white p-4 lg:col-span-2 dark:bg-neutral-900 dark:border-neutral-800">
-          <div className="text-sm font-medium mb-3 text-neutral-700 dark:text-neutral-200">Laba per Hari</div>
-          <div className="h-[38vh] sm:h-64">
+          <div className="text-sm font-medium mb-3 text-neutral-700 dark:text-neutral-200">Pengeluaran Iklan (Harian)</div>
+          <div className="h-[36vh] sm:h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={daily}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -333,8 +334,23 @@ export default function IndexPage() {
                 <YAxis tickFormatter={(v) => fmtNum(v / 1000) + "k"} />
                 <Tooltip formatter={(v) => fmtIDR(v)} />
                 <Legend />
-                <Line type="monotone" dataKey="laba" name="Laba" stroke="#22c55e" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="biayaIklan" name="Biaya Iklan" stroke="#8b5cf6" strokeWidth={2} dot={false} />
               </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="rounded-2xl border border-neutral-200 bg-white p-4 dark:bg-neutral-900 dark:border-neutral-800">
+          <div className="text-sm font-medium mb-3 text-neutral-700 dark:text-neutral-200">Potongan Marketplace (Harian)</div>
+          <div className="h-[36vh] sm:h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={daily}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis tickFormatter={(v) => fmtNum(v / 1000) + "k"} />
+                <Tooltip formatter={(v) => fmtIDR(v)} />
+                <Legend />
+                <Bar dataKey="potonganMarketplace" name="Potongan MP" />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
@@ -343,19 +359,21 @@ export default function IndexPage() {
       {/* Table */}
       <div className="max-w-7xl mx-auto px-4 pb-10">
         <div className="rounded-2xl border border-neutral-200 bg-white overflow-hidden dark:bg-neutral-900 dark:border-neutral-800">
-          <div className="flex flex-wrap items-center justify-between px-4 py-3 border-b gap-2 dark:border-neutral-800">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 py-3 border-b gap-2 dark:border-neutral-800">
             <div className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Rangkuman Harian</div>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 md:flex md:flex-wrap items-center gap-2 w-full md:w-auto">
               <label className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
                 <input type="checkbox" checked={replaceOnImport} onChange={(e) => setReplaceOnImport(e.target.checked)} />
                 Ganti data saat import CSV
               </label>
-              <label className="text-sm px-3 py-1.5 rounded-full bg-neutral-900 text-white cursor-pointer dark:bg-neutral-200 dark:text-neutral-900">
+              <label className="text-sm px-3 py-1.5 rounded-full bg-neutral-900 text-white cursor-pointer dark:bg-neutral-200 dark:text-neutral-900 text-center">
                 Import CSV
                 <input type="file" accept=".csv" className="hidden" onChange={(e)=>{ const f = e.target.files?.[0]; if (f) onImportCSV(f); }} />
               </label>
-              <input placeholder="Admin API Key" value={adminKey} onChange={(e)=>setAdminKey(e.target.value)} className="px-2 py-1 rounded border border-neutral-300 text-sm dark:bg-neutral-800 dark:border-neutral-700" />
-              <button onClick={loginAdmin} className="px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">Login Admin</button>
+              <div className="flex gap-2">
+                <input placeholder="Admin API Key" value={adminKey} onChange={(e)=>setAdminKey(e.target.value)} className="flex-1 px-2 py-1 rounded border border-neutral-300 text-sm dark:bg-neutral-800 dark:border-neutral-700" />
+                <button onClick={loginAdmin} className="px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">Login Admin</button>
+              </div>
             </div>
           </div>
           <div className="overflow-auto">

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 
@@ -18,8 +19,9 @@ export default function Login() {
       });
       const js = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(js.error || "Login gagal");
-      const next = new URLSearchParams(window.location.search).get("next") || "/";
-      window.location.href = next;
+      const nextParam = new URLSearchParams(window.location.search).get("next") || "/";
+      const SAFE_NEXT = /^\/(?!.*\.[a-zA-Z0-9]{1,8}$).*/.test(nextParam) ? nextParam : "/";
+      window.location.href = SAFE_NEXT;
     } catch (e) {
       setError(e.message);
     } finally {

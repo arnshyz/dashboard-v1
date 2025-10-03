@@ -1,20 +1,20 @@
-# AKAY Sales Dashboard – Next.js + Google Sheets (Dark/Light + Logout)
 
-Fitur:
-- Baca data dari Google Sheets via `/api/sales` (GET)
-- Tulis (append) ke Google Sheets via `/api/sales` (POST, `x-api-key`)
-- Metrik: pajak, diskon, codFee, biayaPengiriman, biayaLainnya
-- Export: `/api/export?format=csv|xlsx|pdf`
-- Login UI tanpa DB (cookie 7 hari) + middleware Edge (Web Crypto)
-- **Tema Gelap/Terang (switch di header)** + **Logout** di header
-- Dashboard responsif (mobile-first), login animasi (Framer Motion)
+# AKAY Sales Dashboard – Responsive Header + Ads/Marketplace Charts
+
+Perubahan:
+- Header & tombol **lebih responsif** (grid/flex, w-full di mobile, wrap rapi).
+- Tambah chart **Pengeluaran Iklan (Harian)** dan **Potongan Marketplace (Harian)**.
+- Tetap: tema **Gelap/Terang**, tombol **Logout**, export CSV/XLSX/PDF, login animasi, middleware aman.
 
 ## Setup
-1. `cp .env.example .env.local` → isi semua variabel.
-2. Share Sheet ke `client_email` service account (Editor).
-3. Header Sheet (baris 1):
-   `date,channel,marketplace,qty,penjualan,modal,biayaIklan,potonganMarketplace,biayaOperasional,gajiKaryawan,pajak,diskon,codFee,biayaPengiriman,biayaLainnya`
-4. Install & run: `npm i && npm run dev`
+1) `cp .env.example .env.local` → isi ENV
+2) `npm i && npm run dev`
+3) Share Google Sheet ke service account (Editor)
+4) Header sheet baris 1: `date,channel,marketplace,qty,penjualan,modal,biayaIklan,potonganMarketplace,biayaOperasional,gajiKaryawan,pajak,diskon,codFee,biayaPengiriman,biayaLainnya`
 
 ## Deploy Vercel
-Tambahkan ENV dari `.env.local` → Deploy → Tes `/api/sales` dan `/login`.
+Tambahkan ENV, deploy, uji `/api/sales` & `/login`.
+
+## Catatan UI
+- Tombol di header otomatis **stack** di mobile (lebar kecil) dan **berderet** di layar besar.
+- Kartu/grafik menggunakan tinggi adaptif: `h-[36vh]` / `h-[42vh]` agar pas di HP.
