@@ -1,5 +1,6 @@
 
 import React, { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, Legend,
@@ -328,6 +329,12 @@ export default function IndexPage() {
               </div>
               {/* Action group */}
               <div className="flex flex-wrap items-center gap-2">
+                <Link
+                  href="/warehouse"
+                  className="w-full sm:w-auto rounded-full border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
+                >
+                  Gudang
+                </Link>
                 <button onClick={toggleTheme} className="w-full sm:w-auto px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700" title="Ganti tema">
                   {theme === 'dark' ? '☀️ Terang' : '🌙 Gelap'}
                 </button>
