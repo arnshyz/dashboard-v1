@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 export default function Login() {
@@ -7,6 +7,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const vantaRef = useRef(null);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -29,52 +30,81 @@ export default function Login() {
     }
   };
 
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    let effect = null;
+    let isCancelled = false;
+
+    const ensureScript = (src, check) => {
+      if (check()) return Promise.resolve();
+
+      return new Promise((resolve, reject) => {
+        const existing = document.querySelector(`script[src="${src}"]`);
+        if (existing) {
+          if (existing.dataset.loaded === "true" || check()) {
+            resolve();
+            return;
+          }
+          existing.addEventListener("load", resolve, { once: true });
+          existing.addEventListener("error", reject, { once: true });
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.src = src;
+        script.async = true;
+        script.onload = () => {
+          script.dataset.loaded = "true";
+          resolve();
+        };
+        script.onerror = reject;
+        document.body.appendChild(script);
+      });
+    };
+
+    async function initVanta() {
+      if (!vantaRef.current || isCancelled) return;
+
+      try {
+        await ensureScript("https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js", () => !!window.THREE);
+        await ensureScript("https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.halo.min.js", () => !!window.VANTA?.HALO);
+      } catch (err) {
+        console.error("Failed to load Vanta scripts", err);
+        return;
+      }
+
+      if (isCancelled || effect || !window.VANTA?.HALO) return;
+
+      effect = window.VANTA.HALO({
+        el: vantaRef.current,
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        baseColor: 0x4338ca,
+        backgroundColor: 0x050315,
+        amplitudeFactor: 1.2,
+        size: 1.1,
+        shininess: 80,
+      });
+    }
+
+    initVanta();
+
+    return () => {
+      isCancelled = true;
+      if (effect) {
+        effect.destroy();
+        effect = null;
+      }
+    };
+  }, []);
+
   return (
-    <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
-      {/* Animated line accents */}
-      <motion.div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(110deg, rgba(56,189,248,0.22) 0px, rgba(56,189,248,0.22) 2px, transparent 2px, transparent 140px)",
-          maskImage: "linear-gradient(to bottom, transparent 5%, black 20%, black 80%, transparent 95%)",
-          WebkitMaskImage: "linear-gradient(to bottom, transparent 5%, black 20%, black 80%, transparent 95%)",
-        }}
-        initial={{ opacity: 0.15, backgroundPosition: "0% 0%" }}
-        animate={{ opacity: 0.3, backgroundPosition: ["0% 0%", "200% 100%"] }}
-        transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
-      />
-      <motion.div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(250deg, rgba(167,139,250,0.18) 0px, rgba(167,139,250,0.18) 2px, transparent 2px, transparent 120px)",
-          maskImage: "linear-gradient(to right, transparent 10%, black 30%, black 70%, transparent 90%)",
-          WebkitMaskImage: "linear-gradient(to right, transparent 10%, black 30%, black 70%, transparent 90%)",
-        }}
-        initial={{ opacity: 0.1, backgroundPosition: "0% 100%" }}
-        animate={{ opacity: 0.22, backgroundPosition: ["0% 100%", "-180% -40%"] }}
-        transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
-      />
-
-      {/* Pulsing partial horizontal lines */}
-      <motion.div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "linear-gradient(to bottom, transparent 0%, transparent 40%, rgba(255,255,255,0.12) 45%, transparent 50%, transparent 100%)",
-          backgroundSize: "100% 120px",
-        }}
-        initial={{ opacity: 0.05, backgroundPositionY: 0 }}
-        animate={{ opacity: [0.05, 0.18, 0.05], backgroundPositionY: [0, 60, 120, 0] }}
-        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-      />
-
-      {/* Noise layer */}
-      <div className="absolute inset-0 bg-noise opacity-20 pointer-events-none" />
+    <div className="relative min-h-screen overflow-hidden bg-[#050315] text-white">
+      <div ref={vantaRef} className="pointer-events-none absolute inset-0" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(244,114,182,0.25),transparent_55%),radial-gradient(circle_at_80%_30%,rgba(59,130,246,0.18),transparent_45%),radial-gradient(circle_at_50%_80%,rgba(129,140,248,0.2),transparent_50%)] mix-blend-screen" />
+      <div className="pointer-events-none absolute inset-0 bg-noise opacity-20" />
 
       {/* Centered card */}
       <div className="relative z-10 grid min-h-screen place-items-center px-4">
