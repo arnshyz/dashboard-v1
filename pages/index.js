@@ -58,7 +58,13 @@ function groupByDate(arr) {
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 }
 
-const COLORS = ["#3B82F6","#F97316","#22C55E","#A855F7","#EF4444","#14B8A6","#EAB308","#06B6D4"];
+const formatAxisValue = (value) => {
+  const abs = Math.abs(value);
+  if (abs >= 1_000_000_000) return fmtNum(value / 1_000_000_000) + "B";
+  if (abs >= 1_000_000) return fmtNum(value / 1_000_000) + "M";
+  if (abs >= 1_000) return fmtNum(value / 1_000) + "k";
+  return fmtNum(value);
+};
 
 export default function IndexPage() {
   const [rows, setRows] = useState(seed);
@@ -69,6 +75,7 @@ export default function IndexPage() {
 
   // THEME (light/dark)
   const [theme, setTheme] = useState('light');
+  const isDark = theme === 'dark';
   useEffect(() => {
     const saved = localStorage.getItem('AKAY_THEME') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     setTheme(saved);
@@ -162,6 +169,50 @@ export default function IndexPage() {
     });
     return Array.from(map.entries()).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
   }, [filtered]);
+
+  const pieColors = useMemo(
+    () =>
+      isDark
+        ? ["#38bdf8", "#c084fc", "#f472b6", "#fb7185", "#facc15", "#34d399", "#22d3ee", "#60a5fa", "#f97316"]
+        : ["#3B82F6", "#F97316", "#22C55E", "#A855F7", "#EF4444", "#14B8A6", "#EAB308", "#06B6D4", "#F472B6"],
+    [isDark]
+  );
+
+  const axisTickStyle = useMemo(
+    () => ({ fill: isDark ? '#a1a1aa' : '#4b5563', fontSize: 11, fontWeight: 500 }),
+    [isDark]
+  );
+
+  const legendStyle = useMemo(
+    () => ({ color: isDark ? '#d4d4d8' : '#4b5563', fontSize: 12 }),
+    [isDark]
+  );
+
+  const tooltipStyle = useMemo(
+    () => ({
+      backgroundColor: isDark ? '#18181b' : '#ffffff',
+      borderColor: isDark ? '#27272a' : '#e5e7eb',
+      borderRadius: 12,
+      color: isDark ? '#f4f4f5' : '#1f2937',
+    }),
+    [isDark]
+  );
+
+  const tooltipItemStyle = useMemo(
+    () => ({ color: isDark ? '#f4f4f5' : '#1f2937' }),
+    [isDark]
+  );
+
+  const chartColors = useMemo(
+    () => ({
+      revenue: isDark ? '#60a5fa' : '#3b82f6',
+      cost: isDark ? '#f87171' : '#ef4444',
+      marketing: isDark ? '#c084fc' : '#8b5cf6',
+      bar: isDark ? '#f59e0b' : '#f97316',
+      grid: isDark ? '#27272a' : '#e5e7eb',
+    }),
+    [isDark]
+  );
 
   const toggleSet = (setState, hasFn, value) => { setState((prev) => { const next = new Set(prev); if (hasFn(prev, value)) next.delete(value); else next.add(value); return next; }); };
   const inSet = (set, value) => set.has(value);
@@ -313,21 +364,27 @@ export default function IndexPage() {
               <AreaChart data={daily} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.35} />
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.02} />
+                    <stop offset="5%" stopColor={chartColors.revenue} stopOpacity={0.35} />
+                    <stop offset="95%" stopColor={chartColors.revenue} stopOpacity={0.02} />
                   </linearGradient>
                   <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.35} />
-                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0.02} />
+                    <stop offset="5%" stopColor={chartColors.cost} stopOpacity={0.35} />
+                    <stop offset="95%" stopColor={chartColors.cost} stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis tickFormatter={(v) => fmtNum(v / 1000) + "k"} />
-                <Tooltip formatter={(v) => fmtIDR(v)} />
-                <Legend />
-                <Area type="monotone" dataKey="penjualanNet" name="Pendapatan Net" stroke="#3b82f6" fill="url(#g1)" strokeWidth={2} />
-                <Area type="monotone" dataKey="totalBiaya" name="Total Biaya" stroke="#ef4444" fill="url(#g2)" strokeWidth={2} />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} />
+                <XAxis dataKey="date" tick={axisTickStyle} tickLine={false} axisLine={false} />
+                <YAxis
+                  tickFormatter={formatAxisValue}
+                  tick={axisTickStyle}
+                  width={80}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <Tooltip formatter={(v) => fmtIDR(v)} contentStyle={tooltipStyle} itemStyle={tooltipItemStyle} />
+                <Legend wrapperStyle={legendStyle} />
+                <Area type="monotone" dataKey="penjualanNet" name="Pendapatan Net" stroke={chartColors.revenue} fill="url(#g1)" strokeWidth={2} />
+                <Area type="monotone" dataKey="totalBiaya" name="Total Biaya" stroke={chartColors.cost} fill="url(#g2)" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -338,10 +395,10 @@ export default function IndexPage() {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={90}>
-                  {pieData.map((entry, i) => (<Cell key={i} fill={COLORS[i % COLORS.length]} />))}
+                  {pieData.map((entry, i) => (<Cell key={i} fill={pieColors[i % pieColors.length]} />))}
                 </Pie>
-                <Tooltip formatter={(v) => fmtIDR(v)} />
-                <Legend />
+                <Tooltip formatter={(v) => fmtIDR(v)} contentStyle={tooltipStyle} itemStyle={tooltipItemStyle} />
+                <Legend wrapperStyle={legendStyle} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -355,12 +412,18 @@ export default function IndexPage() {
           <div className="h-[36vh] sm:h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={daily}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis tickFormatter={(v) => fmtNum(v / 1000) + "k"} />
-                <Tooltip formatter={(v) => fmtIDR(v)} />
-                <Legend />
-                <Line type="monotone" dataKey="biayaIklan" name="Biaya Iklan" stroke="#8b5cf6" strokeWidth={2} dot={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} />
+                <XAxis dataKey="date" tick={axisTickStyle} tickLine={false} axisLine={false} />
+                <YAxis
+                  tickFormatter={formatAxisValue}
+                  tick={axisTickStyle}
+                  width={80}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <Tooltip formatter={(v) => fmtIDR(v)} contentStyle={tooltipStyle} itemStyle={tooltipItemStyle} />
+                <Legend wrapperStyle={legendStyle} />
+                <Line type="monotone" dataKey="biayaIklan" name="Biaya Iklan" stroke={chartColors.marketing} strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -370,12 +433,18 @@ export default function IndexPage() {
           <div className="h-[36vh] sm:h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={daily}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis tickFormatter={(v) => fmtNum(v / 1000) + "k"} />
-                <Tooltip formatter={(v) => fmtIDR(v)} />
-                <Legend />
-                <Bar dataKey="potonganMarketplace" name="Potongan MP" />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} />
+                <XAxis dataKey="date" tick={axisTickStyle} tickLine={false} axisLine={false} />
+                <YAxis
+                  tickFormatter={formatAxisValue}
+                  tick={axisTickStyle}
+                  width={80}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <Tooltip formatter={(v) => fmtIDR(v)} contentStyle={tooltipStyle} itemStyle={tooltipItemStyle} />
+                <Legend wrapperStyle={legendStyle} />
+                <Bar dataKey="potonganMarketplace" name="Potongan MP" fill={chartColors.cost} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -385,12 +454,18 @@ export default function IndexPage() {
           <div className="h-[36vh] sm:h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={adSpendByChannel}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis tickFormatter={(v) => fmtNum(v / 1000) + "k"} />
-                <Tooltip formatter={(v) => fmtIDR(v)} />
-                <Legend />
-                <Bar dataKey="value" name="Biaya Iklan" fill="#f97316" />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} />
+                <XAxis dataKey="name" tick={axisTickStyle} tickLine={false} axisLine={false} />
+                <YAxis
+                  tickFormatter={formatAxisValue}
+                  tick={axisTickStyle}
+                  width={80}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <Tooltip formatter={(v) => fmtIDR(v)} contentStyle={tooltipStyle} itemStyle={tooltipItemStyle} />
+                <Legend wrapperStyle={legendStyle} />
+                <Bar dataKey="value" name="Biaya Iklan" fill={chartColors.bar} />
               </BarChart>
             </ResponsiveContainer>
           </div>
