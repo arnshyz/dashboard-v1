@@ -1,12 +1,15 @@
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 export default function Login() {
+  const TYPEWRITER_TEXT = "AKAY DIGITAL NUSANTARA";
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const vantaRef = useRef(null);
+  const [typedText, setTypedText] = useState("");
 
   const submit = async (e) => {
     e.preventDefault();
@@ -29,48 +32,146 @@ export default function Login() {
     }
   };
 
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    let effect = null;
+    let isCancelled = false;
+
+    const ensureScript = (src, check) => {
+      if (check()) return Promise.resolve();
+
+      return new Promise((resolve, reject) => {
+        const existing = document.querySelector(`script[src="${src}"]`);
+        if (existing) {
+          if (existing.dataset.loaded === "true" || check()) {
+            resolve();
+            return;
+          }
+          existing.addEventListener("load", resolve, { once: true });
+          existing.addEventListener("error", reject, { once: true });
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.src = src;
+        script.async = true;
+        script.onload = () => {
+          script.dataset.loaded = "true";
+          resolve();
+        };
+        script.onerror = reject;
+        document.body.appendChild(script);
+      });
+    };
+
+    async function initVanta() {
+      if (!vantaRef.current || isCancelled) return;
+
+      try {
+        await ensureScript("https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js", () => !!window.THREE);
+        await ensureScript("https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.halo.min.js", () => !!window.VANTA?.HALO);
+      } catch (err) {
+        console.error("Failed to load Vanta scripts", err);
+        return;
+      }
+
+      if (isCancelled || effect || !window.VANTA?.HALO) return;
+
+      effect = window.VANTA.HALO({
+        el: vantaRef.current,
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        baseColor: 0x4338ca,
+        backgroundColor: 0x050315,
+        amplitudeFactor: 1.2,
+        size: 1.1,
+        shininess: 80,
+      });
+    }
+
+    initVanta();
+
+    return () => {
+      isCancelled = true;
+      if (effect) {
+        effect.destroy();
+        effect = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return undefined;
+    }
+
+    const fullText = TYPEWRITER_TEXT;
+    let currentLength = 0;
+    let isDeleting = false;
+    let timeoutId = null;
+
+    const tick = () => {
+      if (!isDeleting) {
+        currentLength += 1;
+        setTypedText(fullText.slice(0, currentLength));
+
+        if (currentLength === fullText.length) {
+          isDeleting = true;
+          timeoutId = window.setTimeout(tick, 1400);
+          return;
+        }
+      } else {
+        currentLength = Math.max(0, currentLength - 1);
+        setTypedText(fullText.slice(0, currentLength));
+
+        if (currentLength === 0) {
+          isDeleting = false;
+          timeoutId = window.setTimeout(tick, 500);
+          return;
+        }
+      }
+
+      const delay = isDeleting ? 60 : 120;
+      timeoutId = window.setTimeout(tick, delay);
+    };
+
+    timeoutId = window.setTimeout(tick, 400);
+
+    return () => {
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, [TYPEWRITER_TEXT]);
+
   return (
-    <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
-      {/* Animated gradient blobs */}
-      <motion.div
-        aria-hidden
-        className="pointer-events-none absolute -top-32 -left-32 h-[36rem] w-[36rem] rounded-full blur-3xl"
-        initial={{ opacity: 0.4, scale: 0.9 }}
-        animate={{ opacity: 0.7, scale: 1.05, x: [0, 30, -20, 0], y: [0, -10, 20, 0] }}
-        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-        style={{ background: "radial-gradient(closest-side, rgba(120,119,198,0.6), rgba(120,119,198,0) 70%)" }}
-      />
-      <motion.div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-40 -right-40 h-[40rem] w-[40rem] rounded-full blur-3xl"
-        initial={{ opacity: 0.35, scale: 0.9 }}
-        animate={{ opacity: 0.6, scale: 1.08, x: [0, -20, 35, 0], y: [0, 25, -15, 0] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        style={{ background: "radial-gradient(closest-side, rgba(34,197,94,0.5), rgba(34,197,94,0) 70%)" }}
-      />
+    <div className="relative min-h-screen overflow-hidden bg-[#050315] text-white">
+      <div ref={vantaRef} className="pointer-events-none absolute inset-0" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(244,114,182,0.25),transparent_55%),radial-gradient(circle_at_80%_30%,rgba(59,130,246,0.18),transparent_45%),radial-gradient(circle_at_50%_80%,rgba(129,140,248,0.2),transparent_50%)] mix-blend-screen" />
+      <div className="pointer-events-none absolute inset-0 bg-noise opacity-20" />
 
-      {/* Subtle animated grid overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:24px_24px] opacity-30" />
-      <motion.div
-        aria-hidden
-        className="absolute inset-0"
-        initial={{ backgroundPositionX: 0 }}
-        animate={{ backgroundPositionX: ["0px", "48px", "0px"] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        style={{ backgroundImage: "linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px)", backgroundSize: "48px 100%", mixBlendMode: "overlay" }}
-      />
-
-      {/* Noise layer */}
-      <div className="absolute inset-0 bg-noise opacity-20 pointer-events-none" />
-
-      {/* Centered card */}
-      <div className="relative z-10 grid min-h-screen place-items-center px-4">
+      {/* Login layout */}
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-16 px-4 py-16 text-center md:flex-row md:items-center md:justify-between md:px-12 md:text-left">
+        <div className="max-w-xl space-y-4">
+          <p className="text-sm uppercase tracking-[0.4em] text-white/60">Welcome</p>
+          <div className="flex items-center justify-center gap-2 md:justify-start">
+            <h2 className="text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
+              {typedText}
+            </h2>
+            <span className="mt-2 h-7 w-[3px] animate-pulse rounded-full bg-white/80 sm:h-9" aria-hidden />
+          </div>
+          <p className="text-base text-white/70 sm:text-lg">
+            Transforming data into decisive actions for your business growth.
+          </p>
+        </div>
         <motion.form
           onSubmit={submit}
           initial={{ y: 12, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-sm rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-2xl"
+          className="w-full max-w-sm rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl"
         >
           {/* Brand */}
           <div className="mb-4 flex items-center gap-3">
@@ -118,7 +219,7 @@ export default function Login() {
           </button>
 
           <div className="mt-3 text-center text-xs text-neutral-400">
-            Set ENV <code>ADMIN_UI_USER</code>, <code>ADMIN_UI_PASSWORD</code>, <code>SESSION_SECRET</code>
+            Develop by <span className="font-medium text-neutral-200">@mungwongsepele</span> @2025
           </div>
         </motion.form>
       </div>
