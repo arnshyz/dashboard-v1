@@ -65,6 +65,7 @@ export default function IndexPage() {
   const [replaceOnImport, setReplaceOnImport] = useState(true);
   const [adminKey, setAdminKey] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // THEME (light/dark)
   const [theme, setTheme] = useState('light');
@@ -213,15 +214,30 @@ export default function IndexPage() {
           {/* Responsive header layout */}
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             {/* Brand */}
-            <div className="flex items-center gap-3">
-              <img src="/akay-logo.svg" alt="AKAY" className="w-9 h-9 rounded" />
-              <div>
-                <h1 className="text-xl font-semibold leading-tight">AKAY Sales Dashboard</h1>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400">Google Sheets ↔ Next.js • Admin/Viewer • Export</p>
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <img src="/akay-logo.svg" alt="AKAY" className="w-9 h-9 rounded" />
+                <div>
+                  <h1 className="text-xl font-semibold leading-tight">AKAY Sales Dashboard</h1>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">Google Sheets ↔ Next.js • Admin/Viewer • Export</p>
+                </div>
               </div>
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen((prev) => !prev)}
+                className="md:hidden inline-flex items-center gap-2 px-3 py-2 rounded-full border border-neutral-300 text-sm font-medium text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-100 dark:bg-neutral-900"
+                aria-expanded={mobileMenuOpen}
+                aria-controls="dashboard-controls"
+              >
+                <span className="text-lg" aria-hidden="true">☰</span>
+                Menu
+              </button>
             </div>
             {/* Control groups */}
-            <div className="grid gap-2 sm:grid-cols-2 md:flex md:flex-wrap md:items-center md:gap-2">
+            <div
+              id="dashboard-controls"
+              className={`${mobileMenuOpen ? "flex" : "hidden"} flex-col gap-3 md:flex md:flex-row md:items-center md:justify-between md:gap-4`}
+            >
               {/* Date group */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <div className="flex items-center gap-2">
