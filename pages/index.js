@@ -1,5 +1,6 @@
 
 import React, { useEffect, useMemo, useState } from "react";
+import Head from "next/head";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -66,13 +67,46 @@ const formatAxisValue = (value) => {
   return fmtNum(value);
 };
 
-export default function IndexPage() {
+const defaultPageSettings = {
+  pageTitle: "AKAY Sales Dashboard",
+  description: "Pantau performa penjualan AKAY Digital Nusantara secara real-time.",
+};
+
+export default function IndexPage({ initialSettings }) {
   const [rows, setRows] = useState(seed);
   const [replaceOnImport, setReplaceOnImport] = useState(true);
   const [adminKey, setAdminKey] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [now, setNow] = useState(() => new Date());
+  const [pageSettings, setPageSettings] = useState(initialSettings || defaultPageSettings);
+
+  useEffect(() => {
+    let ignore = false;
+    const loadSettings = async () => {
+      try {
+        const res = await fetch('/api/settings');
+        const data = await res.json().catch(() => null);
+        if (!ignore && res.ok && data) {
+          setPageSettings({
+            pageTitle: data.pageTitle || defaultPageSettings.pageTitle,
+            description: data.description || defaultPageSettings.description,
+          });
+        }
+      } catch (error) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn('Gagal memuat pengaturan halaman', error);
+        }
+      }
+    };
+    loadSettings();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const pageTitle = pageSettings?.pageTitle || defaultPageSettings.pageTitle;
+  const pageDescription = pageSettings?.description || defaultPageSettings.description;
 
   // THEME (light/dark)
   const [theme, setTheme] = useState('light');
@@ -283,7 +317,12 @@ export default function IndexPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
+    <>
+      <Head>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+      </Head>
+      <div className="min-h-screen w-full bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
       {/* Header */}
       <div className="sticky top-0 z-30 backdrop-blur bg-white/70 border-b border-neutral-200
                       dark:bg-neutral-900/70 dark:border-neutral-800">
@@ -296,7 +335,8 @@ export default function IndexPage() {
                 <div className="flex items-center gap-3">
                   <img src="/akay-logo.svg" alt="AKAY" className="w-9 h-9 rounded" />
                   <div>
-                    <h1 className="text-xl font-semibold leading-tight">AKAY Sales Dashboard</h1>
+                    <h1 className="text-xl font-semibold leading-tight">{pageTitle}</h1>
+                    <p className="text-sm text-neutral-500 dark:text-neutral-300">{pageDescription}</p>
                   </div>
                 </div>
                 <button
@@ -334,6 +374,12 @@ export default function IndexPage() {
                   className="w-full sm:w-auto rounded-full border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
                 >
                   Gudang
+                </Link>
+                <Link
+                  href="/admin"
+                  className="w-full sm:w-auto rounded-full border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
+                >
+                  Admin
                 </Link>
                 <button onClick={toggleTheme} className="w-full sm:w-auto px-3 py-1.5 rounded-full border text-sm bg-white hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700" title="Ganti tema">
                   {theme === 'dark' ? '☀️ Terang' : '🌙 Gelap'}
@@ -650,7 +696,19 @@ export default function IndexPage() {
         </p>
       </div>
     </div>
+    </>
   );
+}
+
+export async function getServerSideProps() {
+  try {
+    const { getPublicSettings } = await import('../lib/settings');
+    const settings = await getPublicSettings();
+    return { props: { initialSettings: settings } };
+  } catch (error) {
+    console.warn('Gagal memuat pengaturan publik:', error);
+    return { props: { initialSettings: defaultPageSettings } };
+  }
 }
 
 function KPI({ title, value, sub }) {
